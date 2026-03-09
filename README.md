@@ -1,12 +1,12 @@
-# SeiNoise
+# SeiLapse
 Ambient seismic noise processing: preprocessing, ACF/CCF correlation, and dv/v analysis using Python
 
 
-# SeiNoise 🌍〰️
+# SeiLapse 🌍〰️
 
 **Ambient Seismic Noise Processing & Time-Lapse Velocity Change (dv/v) Analysis Pipeline**
 
-SeiNoise 是一个基于 Python 开发的地震背景噪声处理工作流。本项目致力于从连续地震记录中提取经验格林函数（Empirical Green's Functions），支持单台自相关（ACF）与双台互相关（CCF）计算，并可用于地下介质波速随时间变化的监测（Time-Lapse Seismic Velocity Changes, dv/v）。
+SeiLapse 是一个基于 Python 开发的地震背景噪声处理工作流。本项目致力于从连续地震记录中提取经验格林函数（Empirical Green's Functions），支持单台自相关（ACF）与双台互相关（CCF）计算，并可用于地下介质波速随时间变化的监测（Time-Lapse Seismic Velocity Changes, dv/v）。
 
 本项目的底层算法逻辑深度参考了 Bensen et al. (2007) 的经典处理流程，并在计算效率和多频带自适应处理上进行了优化，其核心相关计算模块在数学上与 Julia 环境下的 `SeisNoise.jl` 保持等价。
 
