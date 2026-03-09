@@ -19,6 +19,7 @@ from scipy.fft import rfft, irfft, next_fast_len
 from tool import detrend, taper, bandpass_filter
 from preprocess import whiten_fft
 from scipy.fft import rfft, irfft, rfftfreq, next_fast_len
+from scipy.signal import butter, filtfilt
 # ═══════════════════════════════════════════════════════════════════
 # 1. 核心相关内核（频域）
 #    严格对应 Julia correlate()
@@ -133,10 +134,13 @@ def clean_up(corr_data: dict, freqmin: float, freqmax: float,
     x  = corr_data['corr'].copy()
     fs = corr_data['fs']
 
+    b, a = butter(2, [freqmin, freqmax], btype='band', fs=fs)
+
     for i in range(x.shape[1]):
         x[:, i] = detrend(x[:, i])
         x[:, i] = taper(x[:, i], fs, max_length=max_length)
-        x[:, i] = bandpass_filter(x[:, i], freqmin, freqmax, fs)
+        # x[:, i] = bandpass_filter(x[:, i], freqmin, freqmax, fs)
+        x[:, i] = filtfilt(b, a, x[:, i])
 
     return {**corr_data, 'corr': x,
             'freqmin': freqmin, 'freqmax': freqmax}

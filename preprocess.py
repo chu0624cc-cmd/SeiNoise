@@ -264,19 +264,38 @@ def time_norm(raw: dict, method: str = 'onebit', clip_factor: float = 3.0,
 # 3. 滑动平均，对应 Julia smooth!(A, half_win)
 # ─────────────────────────────────────────────
 
+# def smooth(x: np.ndarray, half_win: int = 3) -> np.ndarray:
+#     """
+#     cumsum 差分实现滑动平均，边缘用变长窗口。
+#     对应 Julia smooth!(A, half_win)，结果与 Julia 一致。
+#     """
+#     n    = len(x)
+#     csum = np.cumsum(np.concatenate([[0.0], x]))
+#     out  = np.zeros(n)
+#     for i in range(n):
+#         lo      = max(0, i - half_win)
+#         hi      = min(n, i + half_win + 1)
+#         out[i]  = (csum[hi] - csum[lo]) / (hi - lo)
+#     return out
+
 def smooth(x: np.ndarray, half_win: int = 3) -> np.ndarray:
     """
-    cumsum 差分实现滑动平均，边缘用变长窗口。
-    对应 Julia smooth!(A, half_win)，结果与 Julia 一致。
+    使用边界反射 (reflect) 的等长滑动平均。
+    修复：避免频带边缘窗口缩小导致的包络计算失真，与 Julia DSP 行为严格对齐。
     """
-    n    = len(x)
-    csum = np.cumsum(np.concatenate([[0.0], x]))
-    out  = np.zeros(n)
-    for i in range(n):
-        lo      = max(0, i - half_win)
-        hi      = min(n, i + half_win + 1)
-        out[i]  = (csum[hi] - csum[lo]) / (hi - lo)
+    window_len = 2 * half_win + 1
+
+    # 在数组两端镜像填充，防止边缘突变
+    s = np.pad(x, (half_win, half_win), mode='reflect')
+
+    # 构造等权重平滑窗
+    w = np.ones(window_len) / window_len
+
+    # 执行严格的滑动平均卷积
+    out = np.convolve(s, w, mode='valid')
+
     return out
+
 
 # ─────────────────────────────────────────────
 # 4. rfft，对应 Julia FFT = rfft.(R)
