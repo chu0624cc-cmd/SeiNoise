@@ -42,6 +42,7 @@ SeiNoise/
 │   ├── seisplot.py
 │   └── seismic_module.py
 └── 01-完整步骤.ipynb      # 完整流程的使用示例与测试验证
+```
 
 
 ## 📖 参考文献 (References)
